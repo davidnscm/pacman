@@ -12,13 +12,13 @@ import javax.swing.SwingUtilities;
 public class Game extends JFrame implements KeyListener {
 
 	private static final long serialVersionUID = 1L;
-	private Player player = new Player(50, 50, 180);
-	private Ghost ghost1 = new Ghost(0, 0, 0);
-	private Ghost ghost2 = new Ghost(500, 0, 0);
-	private Ghost ghost3 = new Ghost(0, 500, 0);
-	private Ghost ghost4 = new Ghost(500, 500, 0);
+	private Player player = new Player(275, 275, 180);
+	private Ghost ghost1 = new Ghost(10, 10, 10);
+	private Ghost ghost2 = new Ghost(500, 0, 10);
+	private Ghost ghost3 = new Ghost(0, 500, 10);
+	private Ghost ghost4 = new Ghost(500, 500, 10);
 	private Bomb bomb = new Bomb(100, 100);
-	private Booster booster = new Booster(400, 400, 0);
+	private Booster booster = new Booster(400, 400, (int) (Math.random() * 100) + 45);
 
 	private JLabel imgPlayer = new JLabel(new ImageIcon("src/images/pacman.png"));
 	private JLabel imgGhost1 = new JLabel(new ImageIcon("src/images/ghost.png"));
@@ -30,6 +30,11 @@ public class Game extends JFrame implements KeyListener {
 
 	private final int SCREENSIZE = 600;
 	private int speed = 50;
+
+	boolean up;
+	boolean right;
+	boolean left;
+	boolean down;
 
 	public static void main(String[] args) {
 		new Game().init();
@@ -88,13 +93,56 @@ public class Game extends JFrame implements KeyListener {
 	private void run() {
 		while (player.getLife() > 0) {
 
-			// coloque aqui os métodos de movimentação e colisão
+			if (up == true) {
+				player.move();
+			}
+
+			if (left == true) {
+				player.move();
+			}
+
+			if (down == true) {
+				player.move();
+			}
+
+			if (right == true) {
+				player.move();
+			}
+
+			if (player.collision(ghost1) || player.collision(ghost2) || player.collision(ghost3)
+					|| player.collision(ghost4) || player.collision(bomb)) {
+				System.out.println("Você perdeu uma vida");
+				hit();
+			}
+
+			if (player.collision(booster) && booster.isVisible()) {
+				System.out.println("Você agora é Invencível");
+				player.setInvincible(true);
+				booster.setVisible(false);
+			}
+
+			ghost1.movement();
+			ghost2.movement();
+			ghost3.movement();
+			ghost4.movement();
+
+			if (!booster.isVisible()) {
+				booster.setShift(booster.getShift() - 1);
+				if (booster.getShift() == 0) {
+					booster.setVisible(true);
+					player.setInvincible(false);
+					booster.setShift((int) (Math.random() * 100) + 45);
+
+				}
+
+			}
 
 			try {
 				Thread.sleep(speed);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+
 			render();
 
 		}
@@ -115,10 +163,53 @@ public class Game extends JFrame implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		char c = e.getKeyChar();
+		if (c == '8' || c == 'w')
+			up = true;
+		if (c == '6' || c == 'd')
+			right = true;
+		if (c == '2' || c == 's')
+			down = true;
+		if (c == '4' || c == 'a')
+			left = true;
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
+		char c = e.getKeyChar();
+		if (c == '8' || c == 'w')
+			up = true;
+		if (c == '6' || c == 'd')
+			right = true;
+		if (c == '2' || c == 's')
+			down = true;
+		if (c == '4' || c == 'a')
+			left = true;
+	}
+
+	private void resetPosition() {
+		player.setX(275);
+		player.setY(275);
+		ghost1.setX(0);
+		ghost1.setY(0);
+		ghost2.setX(500);
+		ghost2.setY(0);
+		ghost3.setX(0);
+		ghost3.setY(500);
+		ghost4.setX(500);
+		ghost4.setY(500);
+		bomb.setX(100);
+		bomb.setY(100);
+		booster.setX(400);
+		booster.setY(400);
+	}
+
+	private void hit() {
+		if (!player.isInvincible()) {
+			player.setLife(player.getLife() - 1);
+			resetPosition();
+		}
+
 	}
 
 }

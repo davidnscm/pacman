@@ -105,7 +105,7 @@ public class GameObject {
         return visible;
     }
 
-    public void setVisivel(boolean visible) {
+    public void setVisible(boolean visible) {
         this.visible = visible;
     }
 

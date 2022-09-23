@@ -9,6 +9,10 @@ public class Player extends GameObject {
         super(dirX, dirY, screenSize);
     }
 
+    public int getLife() {
+        return life;
+    }
+
     public void setLife(int life) {
         if (life < 1) {
             System.out.println("As vidas precisam ser maior do que zero");
@@ -20,11 +24,7 @@ public class Player extends GameObject {
         return invincible;
     }
 
-    public int getLife() {
-        return life;
-    }
-
-    public void setInvencivel(boolean invincible) {
+    public void setInvincible(boolean invincible) {
         this.invincible = invincible;
     }
 
